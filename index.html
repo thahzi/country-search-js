@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Search - Async Await</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <style>
+           *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            /* overflow-y: hidden; */
+        }
+        
+        .main{
+            width: 100%;
+            height: 100vh;
+            background-image: url('https://cdn.pixabay.com/photo/2023/10/01/17/21/ai-generated-8287826_1280.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            
+        }
+     
+        @media(max-width:992px){
+            #searchbar{
+        width: 300px !important;
+     }
+ }
+
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="text-center pt-4 text-light " >
+            <h1 class="mt-5 mb-5">Country information</h1>
+            <form class="d-flex justify-content-center align-items-center mt-3 " >
+                <div class="me-3" style="width: 600px" id="searchbar">
+                  <input type="text" class="form-control p-3 rounded" placeholder="Enter the country name to search" id="country" aria-describedby="emailHelp">
+                </div>
+                <button type="button" class="btn btn-primary p-3 rounded-5" onclick="search()" id="searchbtn">Search</button>
+              </form>
+              <div class="d-flex justify-content-center align-items-center">
+                <div id="result" class="card mt-3 shadow-lg  rounded" style="width: 400px;background-color: #8BC6EC;
+                background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+                ">
+                
+                
+                  </div>
+              </div>
+           
+        </div>
+    </div>
+  
+</body>
+<script>
+    // addEventListener("keypress",function(event){
+    //   if(even.key === "Enter"){
+    //     searchbtn.search()
+    //   }
+    // })
+    search = async () =>{
+      let countryName = country.value;
+      if(countryName){
+        const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
+        response.json().then((data)=>{
+          // console.log(data[0]);
+          let cname = data[0].name.common
+          let offname = data[0].name.official
+         
+          // currency
+
+          for(let items in data[0].currencies){
+            var curr_name = data[0].currencies[items].name
+            var curr_sym = data[0].currencies[items].symbol
+          }
+          console.log(curr_name,curr_sym);
+          let capital = data[0].capital
+          // languages
+          lang = []
+          for( items in data[0].languages){
+            lang.push(data[0].languages[items])
+          }
+          console.log(lang);
+
+          let borders = data[0].borders
+          let area = data[0].area
+          let map = data[0].maps.googleMaps
+          let population = data[0].population
+          let zone = data[0].timezones
+          let conti = data[0].continents
+          let flag = data[0].flags.png
+
+          result.innerHTML = `<img src=${flag} class="card-img-top" alt="...">
+                    <div class="card-body bg-dark">
+                      <h5 class="card-title">${offname}</h5>
+                      <ul class="list-group list-group-horizontal ">
+                        <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold ">Common Name</div>
+                                ${cname}
+                                <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Currency</div>
+                                ${curr_name} "${curr_sym}"
+                          </ul>
+                          <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Languages</div>
+                                ${lang}
+                                <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Area</div>
+                                ${area}
+                          </ul>
+                          <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold ">Borders</div>
+                                <div style="font-size:15px ; ">${borders}</div>
+                                <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Maps</div>
+                                <a href="${map}">Google Map</a>
+                                
+                          </ul>
+                          <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Population</div>
+                                ${population}
+                                <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Time-Zone</div>
+                                ${zone}
+                          </ul>
+                          <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Continent</div>
+                                ${conti}
+                                <li class="list-group-item flex-fill">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">Capital</div>
+                                ${data[0].capital}
+                          </ul>
+                         
+                         `
+          
+          
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+      }
+      else{
+        alert("Please enter a valid input")
+      }
+      
+    }
+   
+    
+</script>
+<!--
+  commonname, offical name, currencies:name % symbol, capital, languages, borders, area,maps - google maps, population,time zone,continents, flags:png
+ -->
+</html>
